@@ -90,7 +90,7 @@ export default function DashboardPage() {
     <div className="space-y-4 md:space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-green-950 md:text-3xl">Dashboard</h1>
-        <p className="text-sm text-green-800">Visibilidad total del negocio en tiempo real.</p>
+        <p className="text-sm font-medium text-green-900">Visibilidad total del negocio en tiempo real.</p>
       </div>
 
       {error ? (
@@ -118,7 +118,7 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={exportSummary}
-              className="inline-flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-3 py-2 text-sm font-semibold text-green-800 hover:bg-green-100"
+              className="inline-flex items-center gap-2 rounded-xl border border-green-300 bg-white px-3 py-2 text-sm font-semibold text-green-950 hover:bg-green-100"
             >
               <Download size={16} />
               Resumen
@@ -126,7 +126,7 @@ export default function DashboardPage() {
           </div>
         }
       >
-        <p className="text-sm text-green-700">Descarga tus reportes para control financiero y seguimiento de inventario.</p>
+        <p className="text-sm text-green-800">Descarga tus reportes para control financiero y seguimiento de inventario.</p>
       </SectionBlock>
 
       <div className="grid gap-4 md:grid-cols-2 md:gap-6">

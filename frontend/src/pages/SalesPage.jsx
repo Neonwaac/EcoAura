@@ -149,10 +149,10 @@ export default function SalesPage() {
     <div className="space-y-4 md:space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-green-950 md:text-3xl">Ventas</h1>
-        <p className="text-sm text-green-800">Registra clientes, forma de pago y salida de inventario.</p>
+        <p className="text-sm font-medium text-green-900">Registra clientes, forma de pago y salida de inventario.</p>
       </div>
 
-      {message ? <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{message}</div> : null}
+      {message ? <div className="rounded-2xl border border-green-300 bg-green-50 px-4 py-3 text-sm font-medium text-green-900">{message}</div> : null}
       {error ? <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div> : null}
 
       <SectionBlock title="Registrar venta" subtitle="El cliente se crea automaticamente si no existe">
@@ -160,7 +160,7 @@ export default function SalesPage() {
           <select
             value={form.product_id}
             onChange={(e) => setForm((prev) => ({ ...prev, product_id: e.target.value }))}
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             required
           >
             {products.map((product) => (
@@ -173,7 +173,7 @@ export default function SalesPage() {
             value={form.customer_name}
             onChange={(e) => setForm((prev) => ({ ...prev, customer_name: e.target.value }))}
             placeholder="Nombre del cliente"
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             required
           />
           <input
@@ -182,7 +182,7 @@ export default function SalesPage() {
             value={form.quantity}
             onChange={(e) => setForm((prev) => ({ ...prev, quantity: e.target.value }))}
             placeholder="Cantidad"
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             required
           />
           <input
@@ -192,13 +192,13 @@ export default function SalesPage() {
             value={form.unit_price}
             onChange={(e) => setForm((prev) => ({ ...prev, unit_price: e.target.value }))}
             placeholder="Precio unitario"
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             required
           />
           <select
             value={form.payment_method}
             onChange={(e) => setForm((prev) => ({ ...prev, payment_method: e.target.value }))}
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
           >
             {paymentMethods.map((method) => (
               <option key={method} value={method}>
@@ -209,7 +209,7 @@ export default function SalesPage() {
           <select
             value={form.payment_status}
             onChange={(e) => setForm((prev) => ({ ...prev, payment_status: e.target.value }))}
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
           >
             {paymentStatuses.map((status) => (
               <option key={status} value={status}>
@@ -218,11 +218,11 @@ export default function SalesPage() {
             ))}
           </select>
 
-          <div className="rounded-2xl border border-green-100 bg-green-50/60 px-3 py-2 text-sm text-green-800">
+          <div className="rounded-2xl border border-green-200 bg-green-100/70 px-3 py-2 text-sm text-green-900">
             Stock disponible:{' '}
             <span className="font-bold text-green-950">{parseNumber(selectedProduct?.stock || 0)}</span>
           </div>
-          <div className="rounded-2xl border border-green-100 bg-green-50/60 px-3 py-2 text-sm text-green-800">
+          <div className="rounded-2xl border border-green-200 bg-green-100/70 px-3 py-2 text-sm text-green-900">
             Precio sugerido:{' '}
             <span className="font-bold text-green-950">{parseCurrency(selectedProduct?.sale_price || 0)}</span>
           </div>
@@ -237,7 +237,7 @@ export default function SalesPage() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="border-b border-green-100 text-left text-green-700">
+              <tr className="border-b border-green-200 text-left font-semibold text-green-900">
                 <th className="py-2 pr-3">Fecha</th>
                 <th className="py-2 pr-3">Producto</th>
                 <th className="py-2 pr-3">Cliente</th>
@@ -276,14 +276,14 @@ export default function SalesPage() {
                     <div className="flex justify-end gap-1">
                       <button
                         onClick={() => openSaleModal('view', sale.id)}
-                        className="inline-flex items-center gap-1 rounded-xl border border-green-200 px-2 py-1 text-xs font-semibold text-green-800 hover:bg-green-50"
+                        className="inline-flex items-center gap-1 rounded-xl bg-emerald-700 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-800"
                       >
                         <Eye size={14} />
                         Ver
                       </button>
                       <button
                         onClick={() => openSaleModal('edit', sale.id)}
-                        className="inline-flex items-center gap-1 rounded-xl border border-green-200 px-2 py-1 text-xs font-semibold text-green-800 hover:bg-green-50"
+                        className="inline-flex items-center gap-1 rounded-xl bg-green-700 px-2 py-1 text-xs font-semibold text-white hover:bg-green-800"
                       >
                         <Pencil size={14} />
                         Editar
@@ -325,7 +325,7 @@ export default function SalesPage() {
         footer={
           modalMode === 'edit' ? (
             <div className="flex justify-end gap-2">
-              <button onClick={closeModal} className="rounded-xl border border-green-200 px-3 py-2 text-sm font-semibold text-green-800">
+              <button onClick={closeModal} className="rounded-xl border border-green-300 bg-white px-3 py-2 text-sm font-semibold text-green-950 hover:bg-green-50">
                 Cancelar
               </button>
               <button
@@ -338,7 +338,7 @@ export default function SalesPage() {
             </div>
           ) : modalMode === 'delete' ? (
             <div className="flex justify-end gap-2">
-              <button onClick={closeModal} className="rounded-xl border border-green-200 px-3 py-2 text-sm font-semibold text-green-800">
+              <button onClick={closeModal} className="rounded-xl border border-green-300 bg-white px-3 py-2 text-sm font-semibold text-green-950 hover:bg-green-50">
                 Cancelar
               </button>
               <button
@@ -353,7 +353,7 @@ export default function SalesPage() {
         }
       >
         {modalMode === 'view' && selectedSale ? (
-          <div className="grid gap-2 rounded-2xl bg-green-50/60 p-3 text-sm text-green-900">
+          <div className="grid gap-2 rounded-2xl bg-green-100/70 p-3 text-sm text-green-950">
             <p><strong>ID:</strong> {selectedSale.id}</p>
             <p><strong>Fecha:</strong> {formatDate(selectedSale.created_at)}</p>
             <p><strong>Producto:</strong> {selectedSale.product_name}</p>
@@ -371,7 +371,7 @@ export default function SalesPage() {
             <select
               value={editForm.product_id}
               onChange={(e) => setEditForm((prev) => ({ ...prev, product_id: e.target.value }))}
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
               required
             >
               {products.map((product) => (
@@ -384,7 +384,7 @@ export default function SalesPage() {
               value={editForm.customer_name}
               onChange={(e) => setEditForm((prev) => ({ ...prev, customer_name: e.target.value }))}
               placeholder="Nombre del cliente"
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
               required
             />
             <input
@@ -393,7 +393,7 @@ export default function SalesPage() {
               value={editForm.quantity}
               onChange={(e) => setEditForm((prev) => ({ ...prev, quantity: e.target.value }))}
               placeholder="Cantidad"
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
               required
             />
             <input
@@ -403,13 +403,13 @@ export default function SalesPage() {
               value={editForm.unit_price}
               onChange={(e) => setEditForm((prev) => ({ ...prev, unit_price: e.target.value }))}
               placeholder="Precio unitario"
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
               required
             />
             <select
               value={editForm.payment_method}
               onChange={(e) => setEditForm((prev) => ({ ...prev, payment_method: e.target.value }))}
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             >
               {paymentMethods.map((method) => (
                 <option key={method} value={method}>
@@ -420,7 +420,7 @@ export default function SalesPage() {
             <select
               value={editForm.payment_status}
               onChange={(e) => setEditForm((prev) => ({ ...prev, payment_status: e.target.value }))}
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             >
               {paymentStatuses.map((status) => (
                 <option key={status} value={status}>

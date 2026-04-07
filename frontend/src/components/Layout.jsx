@@ -15,7 +15,7 @@ function MenuLink({ to, icon: Icon, label }) {
       end={to === '/'}
       className={({ isActive }) =>
         `flex items-center gap-3 rounded-2xl px-3 py-2 text-sm font-semibold transition ${
-          isActive ? 'bg-green-600 text-white shadow-md' : 'text-green-900 hover:bg-green-100'
+          isActive ? 'bg-green-700 text-white shadow-md' : 'text-green-950 hover:bg-green-200/70'
         }`
       }
     >
@@ -29,12 +29,12 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_0%_0%,#dcfce7,transparent_42%),radial-gradient(circle_at_100%_0%,#bbf7d0,transparent_30%),linear-gradient(180deg,#f7fff9_0%,#f0fdf4_55%,#ffffff_100%)] pb-24 md:pb-0">
       <div className="mx-auto flex w-full max-w-7xl gap-6 px-4 pb-8 pt-4 md:px-8 md:pt-8">
-        <aside className="hidden w-64 shrink-0 rounded-3xl border border-green-100 bg-white/90 p-4 shadow-xl shadow-green-100/60 backdrop-blur md:block">
+        <aside className="hidden w-64 shrink-0 rounded-3xl border border-green-200 bg-white p-4 shadow-xl shadow-green-200/70 md:block">
           <div className="mb-8 flex items-center gap-3 px-2">
             <img src="/ecoaura-logo.jpg" alt="Logo Eco Aura" className="h-12 w-12 object-cover" />
             <div>
               <p className="font-display text-xl font-bold text-green-900">Eco Aura</p>
-              <p className="text-xs text-green-700">Gestion de ventas</p>
+              <p className="text-xs text-green-900">Gestion de ventas</p>
             </div>
           </div>
           <nav className="space-y-1">
@@ -50,12 +50,12 @@ export default function Layout() {
         </aside>
 
         <main className="w-full">
-          <header className="mb-5 rounded-3xl border border-green-100 bg-white/90 px-4 py-3 shadow-md shadow-green-100/50 md:hidden">
+          <header className="mb-5 rounded-3xl border border-green-200 bg-white px-4 py-3 shadow-md shadow-green-200/50 md:hidden">
             <div className="flex items-center gap-3">
               <img src="/ecoaura-logo.jpg" alt="Logo Eco Aura" className="h-10 w-10 rounded-xl object-cover" />
               <div>
                 <p className="font-display text-lg font-bold text-green-900">Eco Aura</p>
-                <p className="text-xs text-green-700">Panel de gestion</p>
+                <p className="text-xs text-green-900">Panel de gestion</p>
               </div>
             </div>
           </header>
@@ -64,7 +64,7 @@ export default function Layout() {
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-3 z-20 mx-auto flex w-[calc(100%-1.5rem)] max-w-lg items-center justify-between rounded-2xl border border-green-100 bg-white/95 p-2 shadow-2xl shadow-green-200/60 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-3 z-20 mx-auto flex w-[calc(100%-1.5rem)] max-w-lg items-center justify-between rounded-2xl border border-green-200 bg-white p-2 shadow-2xl shadow-green-200/60 md:hidden">
         {menu.map((item) => (
           <NavLink
             key={item.to}
@@ -72,7 +72,7 @@ export default function Layout() {
             end={item.to === '/'}
             className={({ isActive }) =>
               `flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl py-2 text-[11px] font-semibold transition ${
-                isActive ? 'bg-green-600 text-white' : 'text-green-800'
+                isActive ? 'bg-green-700 text-white' : 'text-green-950'
               }`
             }
           >

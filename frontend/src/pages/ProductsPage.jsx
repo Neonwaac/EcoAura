@@ -97,10 +97,10 @@ export default function ProductsPage() {
     <div className="space-y-4 md:space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-green-950 md:text-3xl">Productos</h1>
-        <p className="text-sm text-green-800">Crea productos y define su precio de venta.</p>
+        <p className="text-sm font-medium text-green-900">Crea productos y define su precio de venta.</p>
       </div>
 
-      {message ? <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{message}</div> : null}
+      {message ? <div className="rounded-2xl border border-green-300 bg-green-50 px-4 py-3 text-sm font-medium text-green-900">{message}</div> : null}
       {error ? <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div> : null}
 
       <SectionBlock title="Nuevo producto" subtitle="Registra un nuevo item de inventario">
@@ -109,7 +109,7 @@ export default function ProductsPage() {
             value={form.name}
             onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             placeholder="Ej: Herbaria extracto de plantas"
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             required
           />
           <input
@@ -119,7 +119,7 @@ export default function ProductsPage() {
             value={form.sale_price}
             onChange={(e) => setForm((prev) => ({ ...prev, sale_price: e.target.value }))}
             placeholder="Precio de venta"
-            className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+            className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
             required
           />
           <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700">
@@ -133,7 +133,7 @@ export default function ProductsPage() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
-              <tr className="border-b border-green-100 text-left text-green-700">
+              <tr className="border-b border-green-200 text-left font-semibold text-green-900">
                 <th className="py-2 pr-3">Producto</th>
                 <th className="py-2 pr-3">Precio venta</th>
                 <th className="py-2 pr-3">Compradas</th>
@@ -156,14 +156,14 @@ export default function ProductsPage() {
                     <div className="flex justify-end gap-1">
                       <button
                         onClick={() => openProductModal('view', product.id)}
-                        className="inline-flex items-center gap-1 rounded-xl border border-green-200 px-2 py-1 text-xs font-semibold text-green-800 hover:bg-green-50"
+                        className="inline-flex items-center gap-1 rounded-xl bg-emerald-700 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-800"
                       >
                         <Eye size={14} />
                         Ver
                       </button>
                       <button
                         onClick={() => openProductModal('edit', product.id)}
-                        className="inline-flex items-center gap-1 rounded-xl border border-green-200 px-2 py-1 text-xs font-semibold text-green-800 hover:bg-green-50"
+                        className="inline-flex items-center gap-1 rounded-xl bg-green-700 px-2 py-1 text-xs font-semibold text-white hover:bg-green-800"
                       >
                         <Pencil size={14} />
                         Editar
@@ -205,7 +205,7 @@ export default function ProductsPage() {
         footer={
           modalMode === 'edit' ? (
             <div className="flex justify-end gap-2">
-              <button onClick={closeModal} className="rounded-xl border border-green-200 px-3 py-2 text-sm font-semibold text-green-800">
+              <button onClick={closeModal} className="rounded-xl border border-green-300 bg-white px-3 py-2 text-sm font-semibold text-green-950 hover:bg-green-50">
                 Cancelar
               </button>
               <button
@@ -218,7 +218,7 @@ export default function ProductsPage() {
             </div>
           ) : modalMode === 'delete' ? (
             <div className="flex justify-end gap-2">
-              <button onClick={closeModal} className="rounded-xl border border-green-200 px-3 py-2 text-sm font-semibold text-green-800">
+              <button onClick={closeModal} className="rounded-xl border border-green-300 bg-white px-3 py-2 text-sm font-semibold text-green-950 hover:bg-green-50">
                 Cancelar
               </button>
               <button
@@ -233,7 +233,7 @@ export default function ProductsPage() {
         }
       >
         {modalMode === 'view' && selectedProduct ? (
-          <div className="grid gap-2 rounded-2xl bg-green-50/60 p-3 text-sm text-green-900">
+          <div className="grid gap-2 rounded-2xl bg-green-100/70 p-3 text-sm text-green-950">
             <p><strong>ID:</strong> {selectedProduct.id}</p>
             <p><strong>Producto:</strong> {selectedProduct.name}</p>
             <p><strong>Precio de venta:</strong> {parseCurrency(selectedProduct.sale_price)}</p>
@@ -249,7 +249,7 @@ export default function ProductsPage() {
             <input
               value={editForm.name}
               onChange={(e) => setEditForm((prev) => ({ ...prev, name: e.target.value }))}
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
               placeholder="Nombre del producto"
               required
             />
@@ -259,7 +259,7 @@ export default function ProductsPage() {
               step="100"
               value={editForm.sale_price}
               onChange={(e) => setEditForm((prev) => ({ ...prev, sale_price: e.target.value }))}
-              className="rounded-2xl border border-green-200 bg-green-50/40 px-3 py-2 text-sm text-green-900 outline-none ring-green-500 focus:ring"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
               placeholder="Precio de venta"
               required
             />
