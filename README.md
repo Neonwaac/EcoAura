@@ -54,87 +54,75 @@ Puedes crear backend/.env basado en backend/.env.example:
 npm run build
 ```
 
-## Produccion local
+## Ejecucion del backend
 
 ```bash
 npm run start
 ```
 
-En produccion, el backend sirve el frontend compilado desde frontend/dist.
+## Despliegue gratuito recomendado
 
-## Despliegue en Fly.io
+Servicio recomendado: Alwaysdata Free. Es gratis de por vida, no pide tarjeta para registrarse y mantiene almacenamiento persistente para SQLite.
 
-1. Instala Fly CLI e inicia sesion:
+### Paso a paso
 
-```bash
-fly auth login
-```
-
-2. Crea la app si aun no existe:
+1. Crea tu cuenta en Alwaysdata Free.
+2. Crea un acceso SSH desde el panel si no existe.
+3. Sube el proyecto al servidor, idealmente con Git:
 
 ```bash
-fly apps create ecoaura-app
-```
-
-3. Crea el volumen para SQLite:
-
-```bash
-fly volumes create ecoaura_data --region bog --size 1
-```
-
-4. Despliega:
-
-```bash
-fly deploy
-```
-
-La persistencia de SQLite queda en /data/ecoaura.db gracias al volumen montado.
-
-## Despliegue en Alwaysdata (gratis)
-
-Este flujo funciona con el plan Free (0 EUR) y mantiene SQLite persistente en disco.
-
-1. Crea cuenta en Alwaysdata y entra al panel de administracion.
-2. Crea un acceso SSH en Remote access > SSH si aun no existe.
-3. Conectate por SSH y clona el proyecto en tu carpeta personal:
-
-ssh tu_usuario@ssh-tu_usuario.alwaysdata.net
-cd ~
 git clone URL_DE_TU_REPOSITORIO ecoaura
 cd ecoaura
+```
 
-4. Instala dependencias y compila frontend:
+4. Instala dependencias desde la raiz del proyecto:
 
+```bash
 npm install
-npm run build
+```
 
-5. Define variables de entorno en el panel (Web > Environment o equivalente):
+5. En el panel del sitio Node.js, configura lo siguiente:
 
+- Working directory: la raiz del proyecto, por ejemplo `/home/TU_USUARIO/ecoaura`
+- Start command: `npm run start`
+- Internal port: el mismo valor que pongas en `PORT`
+
+6. Define estas variables de entorno en el sitio:
+
+```bash
 NODE_ENV=production
 PORT=8100
-DB_PATH=/home/tu_usuario/ecoaura/backend/data/ecoaura.db
+DB_PATH=/home/TU_USUARIO/ecoaura/backend/data/ecoaura.db
+```
 
-6. Crea el sitio Node.js en Web > Sites > Add:
+7. Guarda la configuracion e inicia el sitio.
+8. Abre la URL publica y valida que cargue la interfaz.
+9. Prueba crear un producto, una compra y una venta, luego recarga la pagina para confirmar que SQLite quedo persistente.
 
-- Type: Node.js
-- Address: el dominio/subdominio asignado
-- Path (working directory): /home/tu_usuario/ecoaura
-- Command: npm run start
-- Internal port: 8100
+### Que hace cada comando
 
-7. Guarda, inicia el sitio y revisa logs desde el panel.
-8. Abre la URL publica y prueba crear producto, compra y venta para validar persistencia.
+- `npm install` instala las dependencias de la raiz y, por el `postinstall`, tambien las de `backend` y `frontend`.
+- `npm run build` compila solo el frontend.
+- `npm run start` compila el frontend y luego arranca el backend en modo produccion.
 
-### Actualizar despliegue despues de cambios
+### Si el panel te pide un build command
 
-Con SSH en el servidor:
+```bash
+npm run build
+```
 
+### Actualizaciones futuras
+
+Cuando hagas cambios:
+
+```bash
 cd ~/ecoaura
 git pull
 npm install
 npm run build
+```
 
-Luego reinicia el sitio Node.js desde el panel de Alwaysdata.
+Luego reinicia el sitio desde el panel.
 
 ## Endpoints principales
 
