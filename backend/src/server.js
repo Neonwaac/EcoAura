@@ -34,7 +34,7 @@ app.use('/api/reports', reportsRouter);
 const frontendDistPath = path.resolve(__dirname, '..', '..', 'frontend', 'dist');
 if (process.env.NODE_ENV === 'production' && fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
-  app.get('*', (_req, res) => {
+  app.get('/{*splat}', (_req, res) => {
     res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 }
