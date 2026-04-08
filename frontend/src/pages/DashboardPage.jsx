@@ -98,8 +98,8 @@ export default function DashboardPage() {
       ) : null}
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <PanelCard title="Ventas" value={loading ? '...' : parseCurrency(data?.totalSales)} icon={DollarSign} />
-        <PanelCard title="Utilidad" value={loading ? '...' : parseCurrency(data?.totalProfit)} icon={TrendingUp} />
+        <PanelCard title="Total Ventas" value={loading ? '...' : parseCurrency(data?.totalSales)} icon={DollarSign} />
+        <PanelCard title="Utilidad Total" value={loading ? '...' : parseCurrency(data?.totalProfit)} icon={TrendingUp} />
         <PanelCard title="Unidades vendidas" value={loading ? '...' : parseNumber(data?.unitsSold)} icon={Leaf} />
         <PanelCard title="Stock disponible" value={loading ? '...' : parseNumber(data?.unitsAvailable)} icon={PackageOpen} />
       </div>
