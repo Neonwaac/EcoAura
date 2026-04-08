@@ -15,6 +15,8 @@ router.get('/sales', (_req, res) => {
         s.quantity AS cantidad,
         s.unit_price AS precio_unitario,
         (s.quantity * s.unit_price) AS total,
+        COALESCE(s.amount_paid, 0) AS pagado,
+        (s.quantity * s.unit_price) - COALESCE(s.amount_paid, 0) AS saldo,
         s.payment_method AS metodo_pago,
         s.payment_status AS estado_pago
       FROM sales s
@@ -24,12 +26,14 @@ router.get('/sales', (_req, res) => {
     `)
     .all();
 
-  const totalVentas = rows.reduce((sum, row) => sum + Number(row.total || 0), 0);
+  const totalFacturado = rows.reduce((sum, row) => sum + Number(row.total || 0), 0);
+  const totalCobrado = rows.reduce((sum, row) => sum + Number(row.pagado || 0), 0);
 
   res.json({
     generated_at: new Date().toISOString(),
     total_registros: rows.length,
-    total_ventas: totalVentas,
+    total_facturado: totalFacturado,
+    total_cobrado: totalCobrado,
     rows,
   });
 });

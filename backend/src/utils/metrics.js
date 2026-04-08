@@ -36,7 +36,7 @@ const productMetricsQuery = `
     SELECT
       product_id,
       SUM(quantity) AS total_sold,
-      SUM(quantity * unit_price) AS revenue
+      SUM(COALESCE(amount_paid, 0)) AS revenue
     FROM sales
     GROUP BY product_id
   ) ts ON p.id = ts.product_id
@@ -50,7 +50,7 @@ function getDashboardSummary() {
   const totals = db
     .prepare(`
       SELECT
-        COALESCE(SUM(quantity * unit_price), 0) AS total_sales,
+        COALESCE(SUM(COALESCE(amount_paid, 0)), 0) AS total_sales,
         COALESCE(SUM(quantity), 0) AS units_sold
       FROM sales
     `)

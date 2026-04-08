@@ -19,6 +19,7 @@ export default function SalesPage() {
     customer_name: '',
     quantity: '',
     unit_price: '',
+    amount_paid: '',
     payment_method: paymentMethods[0],
     payment_status: paymentStatuses[0],
   });
@@ -27,6 +28,7 @@ export default function SalesPage() {
     customer_name: '',
     quantity: '',
     unit_price: '',
+    amount_paid: '',
     payment_method: paymentMethods[0],
     payment_status: paymentStatuses[0],
   });
@@ -72,6 +74,7 @@ export default function SalesPage() {
         customer_name: form.customer_name,
         quantity: Number(form.quantity),
         unit_price: Number(form.unit_price),
+        amount_paid: Number(form.amount_paid),
         payment_method: form.payment_method,
         payment_status: form.payment_status,
       });
@@ -96,6 +99,7 @@ export default function SalesPage() {
         customer_name: current.customer_name,
         quantity: String(current.quantity),
         unit_price: String(current.unit_price),
+        amount_paid: String(current.amount_paid || ''),
         payment_method: current.payment_method,
         payment_status: current.payment_status,
       });
@@ -120,6 +124,7 @@ export default function SalesPage() {
         customer_name: editForm.customer_name,
         quantity: Number(editForm.quantity),
         unit_price: Number(editForm.unit_price),
+        amount_paid: Number(editForm.amount_paid),
         payment_method: editForm.payment_method,
         payment_status: editForm.payment_status,
       });
@@ -218,6 +223,19 @@ export default function SalesPage() {
             ))}
           </select>
 
+          {form.payment_status === 'Parcial' ? (
+            <input
+              type="number"
+              min="1"
+              step="100"
+              value={form.amount_paid}
+              onChange={(e) => setForm((prev) => ({ ...prev, amount_paid: e.target.value }))}
+              placeholder="Monto pagado parcial"
+              className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
+              required
+            />
+          ) : null}
+
           <div className="rounded-2xl border border-green-200 bg-green-100/70 px-3 py-2 text-sm text-green-900">
             Stock disponible:{' '}
             <span className="font-bold text-green-950">{parseNumber(selectedProduct?.stock || 0)}</span>
@@ -244,6 +262,8 @@ export default function SalesPage() {
                 <th className="py-2 pr-3">Cantidad</th>
                 <th className="py-2 pr-3">Unitario</th>
                 <th className="py-2 pr-3">Total</th>
+                <th className="py-2 pr-3">Pagado</th>
+                <th className="py-2 pr-3">Saldo</th>
                 <th className="py-2 pr-3">Metodo</th>
                 <th className="py-2 pr-3">Estado</th>
                 <th className="py-2 pr-3 text-right">Acciones</th>
@@ -258,6 +278,8 @@ export default function SalesPage() {
                   <td className="py-3 pr-3">{parseNumber(sale.quantity)}</td>
                   <td className="py-3 pr-3">{parseCurrency(sale.unit_price)}</td>
                   <td className="py-3 pr-3">{parseCurrency(sale.quantity * sale.unit_price)}</td>
+                  <td className="py-3 pr-3">{parseCurrency(sale.amount_paid)}</td>
+                  <td className="py-3 pr-3">{parseCurrency((sale.quantity * sale.unit_price) - sale.amount_paid)}</td>
                   <td className="py-3 pr-3">{sale.payment_method}</td>
                   <td className="py-3 pr-3">
                     <span
@@ -301,7 +323,7 @@ export default function SalesPage() {
               ))}
               {!sales.length ? (
                 <tr>
-                  <td colSpan={9} className="py-6 text-center text-green-700">
+                  <td colSpan={11} className="py-6 text-center text-green-700">
                     Aun no hay ventas registradas.
                   </td>
                 </tr>
@@ -361,6 +383,8 @@ export default function SalesPage() {
             <p><strong>Cantidad:</strong> {parseNumber(selectedSale.quantity)}</p>
             <p><strong>Precio unitario:</strong> {parseCurrency(selectedSale.unit_price)}</p>
             <p><strong>Total:</strong> {parseCurrency(selectedSale.quantity * selectedSale.unit_price)}</p>
+            <p><strong>Pagado:</strong> {parseCurrency(selectedSale.amount_paid)}</p>
+            <p><strong>Saldo:</strong> {parseCurrency((selectedSale.quantity * selectedSale.unit_price) - selectedSale.amount_paid)}</p>
             <p><strong>Metodo de pago:</strong> {selectedSale.payment_method}</p>
             <p><strong>Estado:</strong> {selectedSale.payment_status}</p>
           </div>
@@ -428,6 +452,19 @@ export default function SalesPage() {
                 </option>
               ))}
             </select>
+
+            {editForm.payment_status === 'Parcial' ? (
+              <input
+                type="number"
+                min="1"
+                step="100"
+                value={editForm.amount_paid}
+                onChange={(e) => setEditForm((prev) => ({ ...prev, amount_paid: e.target.value }))}
+                placeholder="Monto pagado parcial"
+                className="rounded-2xl border border-green-300 bg-white px-3 py-2 text-sm text-green-950 outline-none ring-green-600 focus:ring"
+                required
+              />
+            ) : null}
           </form>
         ) : null}
 

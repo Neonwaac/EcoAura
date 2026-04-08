@@ -4,6 +4,32 @@ const { getProductStock } = require('../utils/metrics');
 
 const router = express.Router();
 
+function resolveAmountPaid(paymentStatus, totalAmount, amountPaidInput) {
+  const raw = Number(amountPaidInput);
+
+  if (paymentStatus === 'Pagado') {
+    return totalAmount;
+  }
+
+  if (paymentStatus === 'Pendiente') {
+    return 0;
+  }
+
+  if (paymentStatus === 'Parcial') {
+    if (Number.isNaN(raw)) {
+      throw new Error('Debes especificar cuanto se pago para una venta parcial.');
+    }
+
+    if (raw <= 0 || raw >= totalAmount) {
+      throw new Error('En estado parcial, el pago debe ser mayor a 0 y menor al total de la venta.');
+    }
+
+    return raw;
+  }
+
+  throw new Error('Estado de pago no valido.');
+}
+
 function getOrCreateCustomerId(customerName) {
   const normalizedName = customerName.trim();
   let customer = db
@@ -29,6 +55,7 @@ router.get('/', (_req, res) => {
         c.name AS customer_name,
         s.quantity,
         s.unit_price,
+        COALESCE(s.amount_paid, 0) AS amount_paid,
         s.payment_method,
         s.payment_status,
         s.created_at
@@ -59,6 +86,7 @@ router.get('/:id', (req, res) => {
         c.name AS customer_name,
         s.quantity,
         s.unit_price,
+        COALESCE(s.amount_paid, 0) AS amount_paid,
         s.payment_method,
         s.payment_status,
         s.created_at
@@ -78,7 +106,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { product_id, customer_name, quantity, unit_price, payment_method, payment_status } = req.body;
+  const { product_id, customer_name, quantity, unit_price, amount_paid, payment_method, payment_status } = req.body;
 
   const productId = Number(product_id);
   const qty = Number(quantity);
@@ -111,6 +139,15 @@ router.post('/', (req, res) => {
     return res.status(400).json({ error: 'El precio unitario no puede ser negativo.' });
   }
 
+  const totalAmount = qty * finalUnitPrice;
+  let amountPaid;
+
+  try {
+    amountPaid = resolveAmountPaid(payment_status, totalAmount, amount_paid);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+
   const saveSale = db.transaction(() => {
     const customerId = getOrCreateCustomerId(customer_name);
 
@@ -122,12 +159,13 @@ router.post('/', (req, res) => {
             customer_id,
             quantity,
             unit_price,
+            amount_paid,
             payment_method,
             payment_status
-          ) VALUES (?, ?, ?, ?, ?, ?)
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)
         `
       )
-      .run(productId, customerId, qty, finalUnitPrice, payment_method, payment_status);
+      .run(productId, customerId, qty, finalUnitPrice, amountPaid, payment_method, payment_status);
 
     return {
       id: sale.lastInsertRowid,
@@ -145,7 +183,7 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const saleId = Number(req.params.id);
-  const { product_id, customer_name, quantity, unit_price, payment_method, payment_status } = req.body;
+  const { product_id, customer_name, quantity, unit_price, amount_paid, payment_method, payment_status } = req.body;
 
   const productId = Number(product_id);
   const qty = Number(quantity);
@@ -186,16 +224,25 @@ router.put('/:id', (req, res) => {
     return res.status(400).json({ error: `Stock insuficiente. Disponible: ${stockAvailable}` });
   }
 
+  const totalAmount = qty * price;
+  let amountPaid;
+
+  try {
+    amountPaid = resolveAmountPaid(payment_status, totalAmount, amount_paid);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+
   try {
     const saveEdit = db.transaction(() => {
       const customerId = getOrCreateCustomerId(customer_name);
       db.prepare(
         `
           UPDATE sales
-          SET product_id = ?, customer_id = ?, quantity = ?, unit_price = ?, payment_method = ?, payment_status = ?
+          SET product_id = ?, customer_id = ?, quantity = ?, unit_price = ?, amount_paid = ?, payment_method = ?, payment_status = ?
           WHERE id = ?
         `
-      ).run(productId, customerId, qty, price, payment_method, payment_status, saleId);
+      ).run(productId, customerId, qty, price, amountPaid, payment_method, payment_status, saleId);
     });
 
     saveEdit();

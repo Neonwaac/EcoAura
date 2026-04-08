@@ -41,6 +41,7 @@ db.exec(`
     customer_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     unit_price REAL NOT NULL CHECK (unit_price >= 0),
+    amount_paid REAL NOT NULL DEFAULT 0 CHECK (amount_paid >= 0),
     payment_method TEXT NOT NULL,
     payment_status TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -52,6 +53,24 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_sales_product ON sales(product_id);
   CREATE INDEX IF NOT EXISTS idx_sales_customer ON sales(customer_id);
   CREATE INDEX IF NOT EXISTS idx_customer_name ON customers(name);
+`);
+
+const salesColumns = db.prepare("PRAGMA table_info('sales')").all();
+const hasAmountPaid = salesColumns.some((col) => col.name === 'amount_paid');
+
+if (!hasAmountPaid) {
+  db.exec('ALTER TABLE sales ADD COLUMN amount_paid REAL');
+}
+
+db.exec(`
+  UPDATE sales
+  SET amount_paid =
+    CASE
+      WHEN payment_status = 'Pendiente' THEN 0
+      WHEN payment_status = 'Pagado' THEN quantity * unit_price
+      ELSE quantity * unit_price
+    END
+  WHERE amount_paid IS NULL
 `);
 
 module.exports = db;
