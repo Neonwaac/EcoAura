@@ -9,18 +9,20 @@ const productMetricsQuery = `
     COALESCE(ts.total_sold, 0) AS total_sold,
     COALESCE(tp.total_purchased, 0) - COALESCE(ts.total_sold, 0) AS stock,
     COALESCE(ts.revenue, 0) AS revenue,
+    COALESCE(ts.billed_revenue, 0) AS billed_revenue,
+    COALESCE(ts.paid_units_equivalent, 0) AS paid_units_equivalent,
     COALESCE(tp.total_cost, 0) AS total_purchase_cost,
     CASE
       WHEN COALESCE(tp.total_purchased, 0) > 0 THEN COALESCE(tp.total_cost, 0) / tp.total_purchased
       ELSE 0
     END AS avg_unit_cost,
     CASE
-      WHEN COALESCE(tp.total_purchased, 0) > 0 THEN COALESCE(ts.total_sold, 0) * (COALESCE(tp.total_cost, 0) / tp.total_purchased)
+      WHEN COALESCE(tp.total_purchased, 0) > 0 THEN COALESCE(ts.paid_units_equivalent, 0) * (COALESCE(tp.total_cost, 0) / tp.total_purchased)
       ELSE 0
     END AS estimated_cost_of_goods,
     COALESCE(ts.revenue, 0) -
       CASE
-        WHEN COALESCE(tp.total_purchased, 0) > 0 THEN COALESCE(ts.total_sold, 0) * (COALESCE(tp.total_cost, 0) / tp.total_purchased)
+        WHEN COALESCE(tp.total_purchased, 0) > 0 THEN COALESCE(ts.paid_units_equivalent, 0) * (COALESCE(tp.total_cost, 0) / tp.total_purchased)
         ELSE 0
       END AS profit
   FROM products p
@@ -36,7 +38,14 @@ const productMetricsQuery = `
     SELECT
       product_id,
       SUM(quantity) AS total_sold,
-      SUM(COALESCE(amount_paid, 0)) AS revenue
+      SUM(quantity * unit_price) AS billed_revenue,
+      SUM(COALESCE(amount_paid, 0)) AS revenue,
+      SUM(
+        CASE
+          WHEN unit_price > 0 THEN COALESCE(amount_paid, 0) / unit_price
+          ELSE 0
+        END
+      ) AS paid_units_equivalent
     FROM sales
     GROUP BY product_id
   ) ts ON p.id = ts.product_id
