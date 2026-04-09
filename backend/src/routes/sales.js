@@ -1,6 +1,6 @@
 const express = require('express');
 const db = require('../db');
-const { getProductStock } = require('../utils/metrics');
+const { getAverageUnitPurchaseCost, getProductStock } = require('../utils/metrics');
 
 const router = express.Router();
 
@@ -55,6 +55,7 @@ router.get('/', (_req, res) => {
         c.name AS customer_name,
         s.quantity,
         s.unit_price,
+        COALESCE(s.unit_cost, 0) AS unit_cost,
         COALESCE(s.amount_paid, 0) AS amount_paid,
         s.payment_method,
         s.payment_status,
@@ -86,6 +87,7 @@ router.get('/:id', (req, res) => {
         c.name AS customer_name,
         s.quantity,
         s.unit_price,
+        COALESCE(s.unit_cost, 0) AS unit_cost,
         COALESCE(s.amount_paid, 0) AS amount_paid,
         s.payment_method,
         s.payment_status,
@@ -141,6 +143,7 @@ router.post('/', (req, res) => {
 
   const totalAmount = qty * finalUnitPrice;
   let amountPaid;
+  const unitCost = getAverageUnitPurchaseCost(productId);
 
   try {
     amountPaid = resolveAmountPaid(payment_status, totalAmount, amount_paid);
@@ -159,13 +162,14 @@ router.post('/', (req, res) => {
             customer_id,
             quantity,
             unit_price,
+            unit_cost,
             amount_paid,
             payment_method,
             payment_status
-          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `
       )
-      .run(productId, customerId, qty, finalUnitPrice, amountPaid, payment_method, payment_status);
+      .run(productId, customerId, qty, finalUnitPrice, unitCost, amountPaid, payment_method, payment_status);
 
     return {
       id: sale.lastInsertRowid,
@@ -226,6 +230,7 @@ router.put('/:id', (req, res) => {
 
   const totalAmount = qty * price;
   let amountPaid;
+  const unitCost = getAverageUnitPurchaseCost(productId);
 
   try {
     amountPaid = resolveAmountPaid(payment_status, totalAmount, amount_paid);
@@ -239,10 +244,10 @@ router.put('/:id', (req, res) => {
       db.prepare(
         `
           UPDATE sales
-          SET product_id = ?, customer_id = ?, quantity = ?, unit_price = ?, amount_paid = ?, payment_method = ?, payment_status = ?
+          SET product_id = ?, customer_id = ?, quantity = ?, unit_price = ?, unit_cost = ?, amount_paid = ?, payment_method = ?, payment_status = ?
           WHERE id = ?
         `
-      ).run(productId, customerId, qty, price, amountPaid, payment_method, payment_status, saleId);
+      ).run(productId, customerId, qty, price, unitCost, amountPaid, payment_method, payment_status, saleId);
     });
 
     saveEdit();

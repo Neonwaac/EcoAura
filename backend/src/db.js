@@ -41,6 +41,7 @@ db.exec(`
     customer_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     unit_price REAL NOT NULL CHECK (unit_price >= 0),
+    unit_cost REAL NOT NULL DEFAULT 0 CHECK (unit_cost >= 0),
     amount_paid REAL NOT NULL DEFAULT 0 CHECK (amount_paid >= 0),
     payment_method TEXT NOT NULL,
     payment_status TEXT NOT NULL,
@@ -57,9 +58,14 @@ db.exec(`
 
 const salesColumns = db.prepare("PRAGMA table_info('sales')").all();
 const hasAmountPaid = salesColumns.some((col) => col.name === 'amount_paid');
+const hasUnitCost = salesColumns.some((col) => col.name === 'unit_cost');
 
 if (!hasAmountPaid) {
   db.exec('ALTER TABLE sales ADD COLUMN amount_paid REAL');
+}
+
+if (!hasUnitCost) {
+  db.exec('ALTER TABLE sales ADD COLUMN unit_cost REAL');
 }
 
 db.exec(`
@@ -71,6 +77,20 @@ db.exec(`
       ELSE quantity * unit_price
     END
   WHERE amount_paid IS NULL
+`);
+
+db.exec(`
+  UPDATE sales
+  SET unit_cost = COALESCE((
+    SELECT
+      CASE
+        WHEN SUM(pu.quantity) > 0 THEN SUM(pu.quantity * pu.purchase_price) / SUM(pu.quantity)
+        ELSE 0
+      END
+    FROM purchases pu
+    WHERE pu.product_id = sales.product_id
+  ), 0)
+  WHERE unit_cost IS NULL
 `);
 
 module.exports = db;
