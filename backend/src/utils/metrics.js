@@ -12,6 +12,7 @@ const productMetricsQuery = `
     COALESCE(ts.billed_revenue, 0) AS billed_revenue,
     COALESCE(ts.full_paid_units, 0) AS full_paid_units,
     COALESCE(ts.partial_collected, 0) AS partial_collected,
+    COALESCE(ts.paid_units_equivalent, 0) AS paid_units_equivalent,
     COALESCE(tp.total_cost, 0) AS total_purchase_cost,
     COALESCE(tp.total_cost_no_shipping, 0) AS total_purchase_cost_no_shipping,
     CASE
@@ -38,8 +39,24 @@ const productMetricsQuery = `
       SUM(COALESCE(amount_paid, 0)) AS collected,
       SUM(CASE WHEN payment_status = 'Pagado' THEN quantity ELSE 0 END) AS full_paid_units,
       SUM(CASE WHEN payment_status = 'Parcial' THEN COALESCE(amount_paid, 0) ELSE 0 END) AS partial_collected,
+      SUM(
+        CASE
+          WHEN payment_status = 'Pagado' THEN quantity
+          WHEN payment_status = 'Parcial' AND unit_price > 0 THEN COALESCE(amount_paid, 0) / unit_price
+          ELSE 0
+        END
+      ) AS paid_units_equivalent,
       SUM(quantity * COALESCE(unit_cost, 0)) AS estimated_cost_of_goods,
-      SUM(COALESCE(amount_paid, 0) - (quantity * COALESCE(unit_cost, 0))) AS profit
+      SUM(
+        COALESCE(amount_paid, 0) -
+        (
+          CASE
+            WHEN payment_status = 'Pagado' THEN quantity
+            WHEN payment_status = 'Parcial' AND unit_price > 0 THEN COALESCE(amount_paid, 0) / unit_price
+            ELSE 0
+          END
+        ) * COALESCE(unit_cost, 0)
+      ) AS profit
     FROM sales
     GROUP BY product_id
   ) ts ON p.id = ts.product_id
